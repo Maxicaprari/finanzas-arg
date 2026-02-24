@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Data files sueltos
+*.xlsx
+
+# Claude Code memory
+.claude/
+
+# Archivos HTML de backup
+acciones/index_.html
+acciones/index (3).html
+
+# Proyectos que no son parte del sitio web
+bcra-dashboard/
+DETECCION REGIMEN/
+BCRA DASHBOARD 2/
+
+# Archivos sueltos de trabajo (solo en raíz)
+/bcra_api_client.py
+/requirements.txt
+/reservas_bcra.csv
+/reservas_historico.csv
+/historico_variables_bcra.csv
+/home.html
+/data/

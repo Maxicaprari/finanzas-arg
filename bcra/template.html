@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BCRA · Monitor Económico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+:root {
+  --bg:      #f1f5f9;
+  --surface: #ffffff;
+  --border:  #dde4ee;
+  --muted:   #7b90aa;
+  --text:    #374659;
+  --bright:  #0f1e30;
+  --accent:  #4361ee;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:#c8d4e3;border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:#a8bcd0;}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── HEADER ─────────────────────────────────────────────────────── */
+header{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.9rem 2rem;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 1px 6px rgba(0,0,0,0.05);
+}
+.back-link{
+  display:flex;align-items:center;gap:0.3rem;
+  font-family:'DM Mono',monospace;font-size:0.65rem;
+  color:var(--muted);text-decoration:none;
+  padding:0.2rem 0.6rem;border-radius:4px;border:1px solid var(--border);
+  transition:all .15s;white-space:nowrap;
+}
+.back-link:hover{color:var(--accent);border-color:var(--accent);}
+.logo{display:flex;align-items:baseline;gap:0.75rem;}
+.logo-bcra{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;color:var(--bright);}
+.logo-bcra span{color:var(--accent);}
+.logo-sub{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.header-right{display:flex;align-items:center;gap:1.5rem;}
+.live-badge{
+  display:flex;align-items:center;gap:0.4rem;
+  font-family:'DM Mono',monospace;font-size:0.65rem;
+  color:var(--accent);border:1px solid rgba(67,97,238,0.25);
+  background:rgba(67,97,238,0.07);padding:0.2rem 0.6rem;border-radius:3px;letter-spacing:1px;
+}
+.live-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.ts-block{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+.updated{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);}
+.updated b{color:var(--text);}
+
+/* ── PERIOD BAR ─────────────────────────────────────────────────── */
+.period-bar{
+  position:relative;z-index:10;
+  display:flex;align-items:center;gap:0.5rem;
+  padding:0.6rem 2rem;background:var(--surface);border-bottom:1px solid var(--border);
+}
+.period-label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-right:0.4rem;}
+.period-btn{
+  font-family:'DM Mono',monospace;font-size:0.7rem;padding:0.25rem 0.7rem;
+  background:transparent;border:1px solid var(--border);color:var(--muted);
+  border-radius:3px;cursor:pointer;transition:all .15s;
+}
+.period-btn:hover{border-color:var(--accent);color:var(--accent);}
+.period-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500;}
+.api-badge{margin-left:auto;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.5px;}
+
+/* ── CARDS ──────────────────────────────────────────────────────── */
+.cards-grid{
+  position:relative;z-index:5;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));
+  gap:1px;background:var(--border);border-bottom:1px solid var(--border);
+}
+.card{
+  background:var(--surface);
+  padding:1.1rem 1.4rem 0.85rem;
+  cursor:pointer;
+  transition:background .15s,border-color .15s;
+  user-select:none;
+  position:relative;
+  border-top:2px solid transparent;
+  overflow:hidden;
+}
+.card:hover{background:#f7f9ff;border-top-color:var(--card-color,var(--accent));}
+.card.active{background:#f0f4ff;border-top-color:var(--card-color,var(--accent));}
+.card-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;}
+.card-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.card-title{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;line-height:1.4;font-family:'DM Mono',monospace;}
+.card-value{font-size:1.6rem;font-weight:700;letter-spacing:-1px;line-height:1;margin-bottom:0.2rem;}
+.card-unit{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);}
+.card-spark{margin-top:0.6rem;opacity:0.9;}
+.card-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:0.35rem;}
+.card-var{font-family:'DM Mono',monospace;font-size:0.63rem;}
+.card-var.pos{color:#0d9488;}.card-var.neg{color:#e84559;}
+.card-date{font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);}
+
+/* ── ANALYSIS STRIP ─────────────────────────────────────────────── */
+.analysis-strip{
+  position:relative;z-index:5;
+  margin:1.25rem 2rem 0;background:var(--surface);
+  border:1px solid var(--border);border-radius:6px;padding:1rem 1.4rem;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:0.75rem;
+}
+.strip-label{
+  grid-column:1/-1;font-family:'DM Mono',monospace;font-size:0.58rem;
+  color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;
+  padding-bottom:0.6rem;border-bottom:1px solid var(--border);margin-bottom:0.1rem;
+}
+.stat-item{
+  padding:0.65rem 0.75rem;border-radius:6px;
+  background:var(--bg);border:1px solid var(--border);
+  transition:border-color .2s;
+}
+.stat-item:hover{border-color:#a8c0d4;}
+.stat-key{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);text-transform:uppercase;margin-bottom:0.25rem;}
+.stat-val{font-size:1rem;font-weight:600;color:var(--bright);margin-bottom:0.2rem;}
+.stat-sub{font-family:'DM Mono',monospace;font-size:0.57rem;color:var(--muted);line-height:1.6;}
+
+/* ── DERIVED METRICS ────────────────────────────────────────────── */
+.derived-section{position:relative;z-index:5;padding:0 2rem;}
+.derived-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.derived-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:6px;padding:1.1rem 1.4rem;
+  transition:border-color .2s,box-shadow .2s;
+  position:relative;overflow:hidden;
+}
+.derived-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--d-color,var(--accent)),transparent);
+}
+.derived-card:hover{border-color:#334155;box-shadow:0 0 20px rgba(0,0,0,0.3);}
+.derived-label{
+  font-family:'DM Mono',monospace;font-size:0.58rem;
+  color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;
+}
+.derived-value{font-size:1.75rem;font-weight:700;letter-spacing:-1px;margin-bottom:0.3rem;line-height:1;}
+.derived-value.pos{color:#0d9488;}.derived-value.neg{color:#e84559;}.derived-value.neutral{color:var(--bright);}
+.derived-detail{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);line-height:1.6;}
+
+/* ── SECTION HEADERS ────────────────────────────────────────────── */
+.section-header{
+  position:relative;z-index:5;padding:1.4rem 2rem 0.6rem;
+  font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;gap:0.8rem;
+}
+.section-header::after{content:'';flex:1;height:1px;background:var(--border);}
+.section-badge{
+  font-size:0.55rem;color:var(--accent);
+  background:rgba(67,97,238,0.08);border:1px solid rgba(67,97,238,0.2);
+  padding:0.1rem 0.4rem;border-radius:3px;white-space:nowrap;
+}
+
+/* ── CHARTS ─────────────────────────────────────────────────────── */
+.charts-section{
+  position:relative;z-index:5;padding:0 2rem 1.5rem;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(500px,1fr));gap:1rem;
+}
+.chart-wrap{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:6px;overflow:hidden;transition:border-color .2s,box-shadow .2s;
+}
+.chart-wrap:hover{border-color:#b0c4d8;}
+.chart-wrap.wide{grid-column:1/-1;}
+.chart-wrap.focused{border-color:var(--accent);grid-column:1/-1;box-shadow:0 0 0 2px rgba(67,97,238,0.12);}
+
+.chart-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.7rem 1rem 0;
+}
+.chart-title{
+  display:flex;align-items:center;gap:0.5rem;
+  font-family:'DM Mono',monospace;font-size:0.63rem;
+  letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);
+}
+.chart-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.chart-toolbar{display:flex;gap:0.3rem;}
+.toolbar-btn{
+  font-family:'DM Mono',monospace;font-size:0.55rem;
+  padding:0.18rem 0.5rem;background:transparent;
+  border:1px solid var(--border);color:var(--muted);
+  border-radius:3px;cursor:pointer;transition:all .15s;letter-spacing:0.3px;
+}
+.toolbar-btn:hover{border-color:var(--accent);color:var(--accent);}
+.toolbar-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+.chart-plot{height:230px;}
+.chart-wrap.wide .chart-plot,.chart-wrap.focused .chart-plot{height:285px;}
+
+.data-table-wrap{
+  display:none;height:230px;overflow-y:auto;
+  padding:0 0.75rem 0.75rem;
+}
+.chart-wrap.wide .data-table-wrap,.chart-wrap.focused .data-table-wrap{height:285px;}
+.data-table{width:100%;border-collapse:collapse;font-family:'DM Mono',monospace;font-size:0.63rem;}
+.data-table th{
+  padding:0.4rem 0.6rem;text-align:left;color:var(--muted);
+  border-bottom:1px solid var(--border);font-weight:400;
+  text-transform:uppercase;letter-spacing:0.5px;
+  position:sticky;top:0;background:var(--surface);z-index:1;
+}
+.data-table td{padding:0.3rem 0.6rem;border-bottom:1px solid var(--border);color:var(--text);}
+.data-table tr:hover td{background:var(--bg);}
+.data-table .pos{color:#0d9488;}.data-table .neg{color:#e84559;}
+
+/* ── FOOTER ─────────────────────────────────────────────────────── */
+footer{
+  position:relative;z-index:5;text-align:center;padding:1.25rem;
+  font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);
+  border-top:1px solid var(--border);
+  background:var(--surface);
+}
+footer a{color:var(--accent);text-decoration:none;}
+footer a:hover{text-decoration:underline;}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────── */
+@media(max-width:750px){
+  .charts-section{grid-template-columns:1fr;padding:0 1rem 1.5rem;}
+  .cards-grid{grid-template-columns:repeat(2,1fr);}
+  header,.period-bar{padding:.85rem 1rem;}
+  .analysis-strip{margin:.75rem 1rem 0;}
+  .section-header{padding:1.1rem 1rem 0.4rem;}
+  .derived-section{padding:0 1rem;}
+  .derived-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <a class="back-link" href="../home.html">← Inicio</a>
+    <div class="logo">
+      <div class="logo-bcra"><span>BCRA</span> Monitor</div>
+      <div class="logo-sub">Estadísticas Monetarias · Argentina</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-badge">EN VIVO</div>
+    <div class="ts-block">
+      <div class="updated">Histórico: <span id="ts-first">—</span> → <b id="ts-gen">—</b></div>
+      <div class="updated">Ahora: <span id="ts-now">—</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="period-bar">
+  <span class="period-label">Período:</span>
+  <button class="period-btn" data-dias="90"   onclick="setPeriod(90,this)">3M</button>
+  <button class="period-btn" data-dias="180"  onclick="setPeriod(180,this)">6M</button>
+  <button class="period-btn active" data-dias="365" onclick="setPeriod(365,this)">1A</button>
+  <button class="period-btn" data-dias="730"  onclick="setPeriod(730,this)">2A</button>
+  <button class="period-btn" data-dias="9999" onclick="setPeriod(9999,this)">Todo</button>
+  <span class="api-badge">API BCRA v4.0</span>
+</div>
+
+<div class="cards-grid" id="cards-grid"></div>
+
+<div class="analysis-strip" id="astrip">
+  <div class="strip-label">Estadísticas del período seleccionado</div>
+</div>
+
+<div class="section-header">
+  Indicadores Derivados
+  <span class="section-badge">calculados</span>
+</div>
+<div class="derived-section">
+  <div class="derived-grid" id="derived-grid">
+    <div class="derived-card" style="--d-color:#94a3b8">
+      <div class="derived-label">Cargando indicadores…</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-header">
+  Análisis Cruzado
+  <span class="section-badge">2 series</span>
+</div>
+<div class="charts-section">
+  <div class="chart-wrap wide" id="wrap_spread">
+    <div class="chart-header">
+      <div class="chart-title">
+        <span class="chart-dot" style="background:#ff6b6b"></span>
+        Spread TC · B9791 vs A3500
+      </div>
+    </div>
+    <div class="chart-plot" id="chart_spread"></div>
+  </div>
+  <div class="chart-wrap wide" id="wrap_tasas">
+    <div class="chart-header">
+      <div class="chart-title">
+        <span class="chart-dot" style="background:#a29bfe"></span>
+        Tasas de Interés · BADLAR vs Plazo Fijo
+      </div>
+    </div>
+    <div class="chart-plot" id="chart_tasas"></div>
+  </div>
+</div>
+
+<div class="section-header">
+  Variables Monetarias
+  <span class="section-badge" id="vars-badge">7 series</span>
+</div>
+<div class="charts-section" id="main-charts"></div>
+
+<footer>
+  Datos: <a href="https://www.bcra.gob.ar/BCRAyVos/Catalogo_de_APIs_702.asp" target="_blank">API del BCRA v4.0</a> ·
+  Generado con <code>generate_dashboard_v2.py</code> ·
+  <span id="footer-ts">—</span>
+</footer>
+
+<script>
+// ── DATOS inyectados por generate_dashboard_v2.py ────────────────────────────
+// PLACEHOLDER_DATA — el script reemplaza esta línea con los datos reales
+const ALL_DATA = {};
+</script>
+</body>
+</html>

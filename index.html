@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finanzas ARG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f1f5f9;
+    color: #374659;
+    min-height: 100vh;
+  }
+
+  /* ── TOPBAR ─────────────────────────────── */
+  .topbar {
+    background: #ffffff;
+    border-bottom: 1px solid #dde4ee;
+    padding: 0 2rem;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .brand {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f1e30;
+    letter-spacing: -0.2px;
+  }
+  .brand span { color: #4361ee; }
+  .topbar-divider {
+    width: 1px;
+    height: 18px;
+    background: #dde4ee;
+  }
+  .topbar-sub {
+    font-size: 0.78rem;
+    color: #7b90aa;
+  }
+
+  /* ── HERO ───────────────────────────────── */
+  .hero {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 44px 24px 20px;
+  }
+  .hero h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f1e30;
+    letter-spacing: -0.4px;
+    margin-bottom: 5px;
+  }
+  .hero p {
+    font-size: 0.86rem;
+    color: #7b90aa;
+  }
+
+  /* ── MAIN ───────────────────────────────── */
+  .main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px 64px;
+  }
+
+  /* ── SECTION ────────────────────────────── */
+  .section { margin-bottom: 28px; }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #dde4ee;
+  }
+  .section-label span {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #7b90aa;
+    white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── ITEM LIST ──────────────────────────── */
+  .item-list {
+    background: #ffffff;
+    border: 1px solid #dde4ee;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  /* ── ITEM ───────────────────────────────── */
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.12s;
+    position: relative;
+    border-bottom: 1px solid #f0f4f8;
+  }
+  .item:last-child { border-bottom: none; }
+
+  .item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
+    background: var(--c, #4361ee);
+    opacity: 0;
+    transition: opacity 0.12s;
+  }
+  .item:not(.disabled):hover {
+    background: #f7f9ff;
+  }
+  .item:not(.disabled):hover::before { opacity: 1; }
+
+  .item.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: default;
+  }
+
+  /* ── ITEM ICON ──────────────────────────── */
+  .item-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--ib, #eef1fb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  /* ── ITEM TEXT ──────────────────────────── */
+  .item-text { flex: 1; min-width: 0; }
+  .item-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #0f1e30;
+    margin-bottom: 1px;
+  }
+  .item-desc {
+    font-size: 0.76rem;
+    color: #7b90aa;
+    line-height: 1.35;
+  }
+
+  /* ── RIGHT SIDE ─────────────────────────── */
+  .item-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .badge-live {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: #0d9488;
+    background: #f0fdf9;
+    border: 1px solid #a7f3e0;
+    border-radius: 20px;
+    padding: 2px 8px;
+    letter-spacing: 0.2px;
+  }
+  .badge-soon {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: #9aadbe;
+    background: #f0f4f8;
+    border: 1px solid #dde4ee;
+    border-radius: 20px;
+    padding: 2px 8px;
+  }
+  .chevron {
+    color: #b8cad8;
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  /* ── FOOTER ─────────────────────────────── */
+  footer {
+    text-align: center;
+    padding-bottom: 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: #9aadbe;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Finanzas <span>ARG</span></div>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">herramientas para el mercado argentino</span>
+</div>
+
+<div class="hero">
+  <h1>¿Qué querés analizar hoy?</h1>
+  <p>Seleccioná una herramienta para comenzar.</p>
+</div>
+
+<div class="main">
+
+  <!-- FINANZAS -->
+  <div class="section">
+    <div class="section-label"><span>Finanzas</span></div>
+    <div class="item-list">
+
+      <a class="item" href="acciones/index.html" style="--c:#22c55e; --ib:#f0fdf5;">
+        <div class="item-icon">📈</div>
+        <div class="item-text">
+          <div class="item-title">Acciones</div>
+          <div class="item-desc">Retornos, heatmap y volumen inusual del mercado local.</div>
+        </div>
+        <div class="item-right">
+          <span class="badge-live">Disponible</span>
+          <span class="chevron">›</span>
+        </div>
+      </a>
+
+      <a class="item disabled" href="#" style="--c:#f59e0b; --ib:#fffbeb;">
+        <div class="item-icon">💵</div>
+        <div class="item-text">
+          <div class="item-title">Carry Trade</div>
+          <div class="item-desc">Compará bonos para optimizar una estrategia de carry.</div>
+        </div>
+        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+      </a>
+
+      <a class="item disabled" href="#" style="--c:#8b5cf6; --ib:#f5f3ff;">
+        <div class="item-icon">📋</div>
+        <div class="item-text">
+          <div class="item-title">Duales TAMAR</div>
+          <div class="item-desc">Análisis de bonos duales atados a tasa TAMAR.</div>
+        </div>
+        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+      </a>
+
+      <a class="item disabled" href="#" style="--c:#06b6d4; --ib:#ecfeff;">
+        <div class="item-icon">📊</div>
+        <div class="item-text">
+          <div class="item-title">Renta Fija</div>
+          <div class="item-desc">Encontrá el mejor bono para invertir según tu perfil.</div>
+        </div>
+        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- INTERNACIONAL -->
+  <div class="section">
+    <div class="section-label"><span>Internacional</span></div>
+    <div class="item-list">
+
+      <a class="item" href="dashboard-internacional/index.html" style="--c:#3b82f6; --ib:#eff6ff;">
+        <div class="item-icon">🌎</div>
+        <div class="item-text">
+          <div class="item-title">S&amp;P 500</div>
+          <div class="item-desc">Retornos, heatmap sectorial y volumen inusual del mercado americano.</div>
+        </div>
+        <div class="item-right">
+          <span class="badge-live">Disponible</span>
+          <span class="chevron">›</span>
+        </div>
+      </a>
+
+      <a class="item disabled" href="#" style="--c:#6366f1; --ib:#eef2ff;">
+        <div class="item-icon">🌍</div>
+        <div class="item-text">
+          <div class="item-title">Europa / Otros índices</div>
+          <div class="item-desc">Análisis de mercados europeos y otros índices globales.</div>
+        </div>
+        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- BCRA -->
+  <div class="section">
+    <div class="section-label"><span>BCRA</span></div>
+    <div class="item-list">
+
+      <a class="item" href="bcra/index.html" style="--c:#4361ee; --ib:#eef1fb;">
+        <div class="item-icon">🏦</div>
+        <div class="item-text">
+          <div class="item-title">Macroeconomía</div>
+          <div class="item-desc">Reservas, tipo de cambio, inflación, base monetaria y más.</div>
+        </div>
+        <div class="item-right">
+          <span class="badge-live">Disponible</span>
+          <span class="chevron">›</span>
+        </div>
+      </a>
+
+      <a class="item disabled" href="#" style="--c:#ef4444; --ib:#fef2f2;">
+        <div class="item-icon">🔍</div>
+        <div class="item-text">
+          <div class="item-title">Central de Deudores</div>
+          <div class="item-desc">Consultá situación crediticia en el sistema financiero.</div>
+        </div>
+        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+      </a>
+
+      <a class="item disabled" href="#" style="--c:#f97316; --ib:#fff7ed;">
+        <div class="item-icon">🧮</div>
+        <div class="item-text">
+          <div class="item-title">Calculadora de Inflación</div>
+          <div class="item-desc">Actualizá valores históricos usando IPC oficial.</div>
+        </div>
+        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+      </a>
+
+    </div>
+  </div>
+
+</div>
+
+<footer>Datos desde API BCRA y fuentes públicas · Uso personal</footer>
+
+</body>
+</html>
