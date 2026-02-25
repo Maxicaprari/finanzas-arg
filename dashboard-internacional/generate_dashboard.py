@@ -172,9 +172,9 @@ fig_heatmap.update_layout(
     xaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
     yaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
     height=400,
-    plot_bgcolor='#f8fafc',
-    paper_bgcolor='#f8fafc',
-    font=dict(family="DM Sans, sans-serif"),
+    plot_bgcolor='#161b22',
+    paper_bgcolor='#0d1117',
+    font=dict(family='DM Sans, sans-serif', color='#e6edf3'),
     margin=dict(l=20, r=20, t=60, b=20)
 )
 
@@ -206,7 +206,7 @@ fig_breadth.add_trace(
 fig_breadth.add_vline(
     x=avg_change,
     line_dash="dash",
-    line_color="#1e293b",
+    line_color="#8b949e",
     line_width=2,
     annotation_text=f"Media: {avg_change:+.2f}%",
     row=1,
@@ -273,9 +273,9 @@ fig_breadth.update_layout(
     barmode='stack',
     height=400,
     showlegend=True,
-    plot_bgcolor='#f8fafc',
-    paper_bgcolor='#f8fafc',
-    font=dict(family="DM Sans, sans-serif"),
+    plot_bgcolor='#161b22',
+    paper_bgcolor='#0d1117',
+    font=dict(family='DM Sans, sans-serif', color='#e6edf3'),
     margin=dict(l=40, r=40, t=60, b=40)
 )
 
@@ -331,8 +331,8 @@ fig_movers.update_yaxes(autorange="reversed", row=1, col=2)
 fig_movers.update_layout(
     height=600,
     showlegend=False,
-    plot_bgcolor='#f8fafc',
-    paper_bgcolor='#f8fafc',
+    plot_bgcolor='#161b22',
+    paper_bgcolor='#0d1117',
     font=dict(family="DM Sans, sans-serif", size=9),
     margin=dict(l=180, r=180, t=60, b=40)
 )
@@ -369,8 +369,8 @@ if has_volume_data:
         title="Acciones con Volumen Inusual",
         xaxis_title="Ratio Volumen / Promedio 30 ruedas",
         height=500,
-        plot_bgcolor='#f8fafc',
-        paper_bgcolor='#f8fafc',
+        plot_bgcolor='#161b22',
+        paper_bgcolor='#0d1117',
         font=dict(family="DM Sans, sans-serif", size=9),
         margin=dict(l=300, r=40, t=60, b=40),
         showlegend=False
@@ -436,47 +436,48 @@ html_content = f"""<!DOCTYPE html>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {{
-      --bg:#f1f5f9;--surface:#fff;--border:#e2e8f0;--text-main:#0f172a;--text-muted:#64748b;
-      --blue:#3b82f6;--orange:#f97316;--green:#22c55e;--red:#ef4444;--slate:#94a3b8;
+      --bg:#0d1117;--surface:#161b22;--surface2:#1c2128;--border:#30363d;--border2:#21262d;
+      --text:#e6edf3;--muted:#8b949e;--muted2:#6e7681;
+      --blue:#58a6ff;--orange:#e3b341;--green:#3fb950;--red:#f85149;--slate:#8b949e;
     }}
     *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0;}}
-    body{{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-main);padding:28px 20px 60px;line-height:1.6;}}
+    body{{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);padding:28px 20px 60px;line-height:1.6;}}
     .page-wrap{{max-width:1380px;margin:0 auto;}}
     .page-header{{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:32px;padding-bottom:20px;border-bottom:2px solid var(--border);}}
     .back-link{{font-size:0.82rem;color:var(--blue);text-decoration:none;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;margin-bottom:10px;}}
     .back-link:hover{{text-decoration:underline;}}
     .page-header h1{{font-size:1.9rem;font-weight:600;letter-spacing:-0.03em;}}
     .page-header h1 span{{color:var(--blue);}}
-    .meta{{font-size:0.82rem;color:var(--text-muted);font-family:'DM Mono',monospace;text-align:right;}}
+    .meta{{font-size:0.82rem;color:var(--muted);font-family:'DM Mono',monospace;text-align:right;}}
     .sentiment-banner{{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-left:5px solid {sentiment_color};border-radius:10px;padding:16px 22px;margin-bottom:28px;}}
     .sentiment-label{{font-weight:600;font-size:1rem;color:{sentiment_color};white-space:nowrap;}}
-    .sentiment-text{{color:var(--text-muted);font-size:0.87rem;}}
+    .sentiment-text{{color:var(--muted);font-size:0.87rem;}}
     .kpi-strip{{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:28px;}}
     .kpi{{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;}}
-    .kpi-label{{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:6px;}}
+    .kpi-label{{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:6px;}}
     .kpi-value{{font-size:1.7rem;font-weight:600;font-family:'DM Mono',monospace;}}
     .kpi-value.pos{{color:var(--blue);}}
     .kpi-value.neg{{color:var(--orange);}}
-    .kpi-value.neu{{color:var(--text-main);}}
+    .kpi-value.neu{{color:var(--text);}}
     .grid-2{{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px;}}
     .full-width{{margin-bottom:22px;}}
     .card{{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}}
     .card-header{{display:flex;align-items:center;gap:10px;padding:18px 22px 12px;border-bottom:1px solid var(--border);}}
     .card-title{{font-size:1rem;font-weight:600;}}
-    .badge{{margin-left:auto;font-size:0.72rem;font-family:'DM Mono',monospace;background:#eff6ff;color:var(--blue);border:1px solid #bfdbfe;border-radius:99px;padding:2px 10px;}}
+    .badge{{margin-left:auto;font-size:0.72rem;font-family:'DM Mono',monospace;background:rgba(88,166,255,0.1);color:var(--blue);border:1px solid rgba(88,166,255,0.25);border-radius:99px;padding:2px 10px;}}
     .chart-wrap{{padding:18px 18px 10px;}}
-    .explainer{{font-size:0.83rem;color:var(--text-muted);padding:12px 22px 18px;border-top:1px dashed var(--border);line-height:1.65;}}
-    .summary-card{{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:10px;padding:20px 24px;margin-bottom:28px;font-size:0.9rem;line-height:1.75;color:#334155;}}
+    .explainer{{font-size:0.83rem;color:var(--muted);padding:12px 22px 18px;border-top:1px dashed var(--border);line-height:1.65;}}
+    .summary-card{{background:var(--surface2);border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:10px;padding:20px 24px;margin-bottom:28px;font-size:0.9rem;line-height:1.75;color:var(--text);}}
     .summary-title{{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--blue);font-weight:600;margin-bottom:10px;}}
     .table-scroll{{overflow-x:auto;padding:0 18px 18px;}}
     .data-table{{width:100%;border-collapse:collapse;font-size:0.83rem;font-family:'DM Mono',monospace;}}
-    .data-table th{{background:#f1f5f9;color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}}
-    .data-table td{{padding:9px 12px;border-bottom:1px solid #f1f5f9;white-space:nowrap;}}
+    .data-table th{{background:var(--surface2);color:var(--muted);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}}
+    .data-table td{{padding:9px 12px;border-bottom:1px solid var(--border2);white-space:nowrap;}}
     .data-table tr:last-child td{{border-bottom:none;}}
-    .data-table tr:hover td{{background:#f8fafc;}}
+    .data-table tr:hover td{{background:var(--surface2);}}
     .positive{{color:var(--blue);font-weight:600;}}
     .negative{{color:var(--orange);font-weight:600;}}
-    .page-footer{{text-align:center;margin-top:48px;font-size:0.78rem;color:var(--slate);font-family:'DM Mono',monospace;}}
+    .page-footer{{text-align:center;margin-top:48px;font-size:0.78rem;color:var(--muted);font-family:'DM Mono',monospace;}}
     @media (max-width:860px){{.grid-2{{grid-template-columns:1fr;}}.page-header{{flex-direction:column;align-items:flex-start;gap:8px;}}}}
   </style>
 </head>
