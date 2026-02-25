@@ -5,117 +5,170 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Finanzas ARG</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #f1f5f9;
-    color: #374659;
-    min-height: 100vh;
+  :root {
+    --bg:       #0d1117;
+    --surface:  #161b22;
+    --surface2: #1c2128;
+    --border:   #30363d;
+    --border2:  #21262d;
+    --text:     #e6edf3;
+    --muted:    #8b949e;
+    --muted2:   #6e7681;
+    --accent:   #58a6ff;
+    --accent2:  #388bfd;
+    --green:    #3fb950;
+    --green-bg: #0d1f12;
+    --mono:     'DM Mono', monospace;
+    --sans:     'Inter', sans-serif;
   }
 
-  /* ── TOPBAR ─────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── TOPBAR ───────────────────────────────── */
   .topbar {
-    background: #ffffff;
-    border-bottom: 1px solid #dde4ee;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
     padding: 0 2rem;
-    height: 54px;
+    height: 52px;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 16px;
     position: sticky;
     top: 0;
     z-index: 10;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  }
-  .brand {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #0f1e30;
-    letter-spacing: -0.2px;
-  }
-  .brand span { color: #4361ee; }
-  .topbar-divider {
-    width: 1px;
-    height: 18px;
-    background: #dde4ee;
-  }
-  .topbar-sub {
-    font-size: 0.78rem;
-    color: #7b90aa;
   }
 
-  /* ── HERO ───────────────────────────────── */
+  .brand {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.2px;
+  }
+  .brand span { color: var(--accent); }
+
+  .topbar-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border);
+  }
+
+  .topbar-sub {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted2);
+  }
+
+  .topbar-dot {
+    margin-left: auto;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+
+  /* ── HERO ──────────────────────────────────── */
   .hero {
     max-width: 680px;
     margin: 0 auto;
-    padding: 44px 24px 20px;
-  }
-  .hero h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #0f1e30;
-    letter-spacing: -0.4px;
-    margin-bottom: 5px;
-  }
-  .hero p {
-    font-size: 0.86rem;
-    color: #7b90aa;
+    padding: 48px 24px 24px;
   }
 
-  /* ── MAIN ───────────────────────────────── */
+  .hero-prompt {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--green);
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  .hero h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  /* ── MAIN ──────────────────────────────────── */
   .main {
     max-width: 680px;
     margin: 0 auto;
-    padding: 0 24px 64px;
+    padding: 8px 24px 72px;
   }
 
-  /* ── SECTION ────────────────────────────── */
-  .section { margin-bottom: 28px; }
+  /* ── SECTION ───────────────────────────────── */
+  .section { margin-bottom: 32px; }
 
   .section-label {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 10px;
+  }
+  .section-label span {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--muted2);
+    white-space: nowrap;
   }
   .section-label::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: #dde4ee;
-  }
-  .section-label span {
-    font-size: 0.68rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: #7b90aa;
-    white-space: nowrap;
-    font-family: 'DM Mono', monospace;
+    background: var(--border2);
   }
 
-  /* ── ITEM LIST ──────────────────────────── */
+  /* ── ITEM LIST ─────────────────────────────── */
   .item-list {
-    background: #ffffff;
-    border: 1px solid #dde4ee;
-    border-radius: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
     overflow: hidden;
   }
 
-  /* ── ITEM ───────────────────────────────── */
+  /* ── ITEM ──────────────────────────────────── */
   .item {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 15px 18px;
+    padding: 14px 18px;
     text-decoration: none;
     color: inherit;
-    transition: background 0.12s;
+    transition: background 0.1s;
     position: relative;
-    border-bottom: 1px solid #f0f4f8;
+    border-bottom: 1px solid var(--border2);
   }
   .item:last-child { border-bottom: none; }
 
@@ -123,104 +176,118 @@
     content: '';
     position: absolute;
     left: 0; top: 0; bottom: 0;
-    width: 3px;
-    border-radius: 0 2px 2px 0;
-    background: var(--c, #4361ee);
+    width: 2px;
+    background: var(--c, var(--accent));
     opacity: 0;
-    transition: opacity 0.12s;
+    transition: opacity 0.1s;
   }
+
   .item:not(.disabled):hover {
-    background: #f7f9ff;
+    background: var(--surface2);
   }
   .item:not(.disabled):hover::before { opacity: 1; }
 
   .item.disabled {
-    opacity: 0.5;
+    opacity: 0.38;
     pointer-events: none;
     cursor: default;
   }
 
-  /* ── ITEM ICON ──────────────────────────── */
+  /* ── ITEM ICON ─────────────────────────────── */
   .item-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: var(--ib, #eef1fb);
+    width: 34px;
+    height: 34px;
+    border-radius: 7px;
+    background: var(--ib, #1c2128);
+    border: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 1rem;
     flex-shrink: 0;
   }
 
-  /* ── ITEM TEXT ──────────────────────────── */
+  /* ── ITEM TEXT ─────────────────────────────── */
   .item-text { flex: 1; min-width: 0; }
+
   .item-title {
-    font-size: 0.88rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    color: #0f1e30;
+    color: var(--text);
     margin-bottom: 1px;
   }
+
   .item-desc {
-    font-size: 0.76rem;
-    color: #7b90aa;
+    font-size: 0.74rem;
+    color: var(--muted);
     line-height: 1.35;
+    font-family: var(--mono);
   }
 
-  /* ── RIGHT SIDE ─────────────────────────── */
+  /* ── RIGHT SIDE ────────────────────────────── */
   .item-right {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
   }
+
   .badge-live {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    font-weight: 500;
-    color: #0d9488;
-    background: #f0fdf9;
-    border: 1px solid #a7f3e0;
-    border-radius: 20px;
-    padding: 2px 8px;
-    letter-spacing: 0.2px;
-  }
-  .badge-soon {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    color: #9aadbe;
-    background: #f0f4f8;
-    border: 1px solid #dde4ee;
-    border-radius: 20px;
-    padding: 2px 8px;
-  }
-  .chevron {
-    color: #b8cad8;
-    font-size: 1.1rem;
-    line-height: 1;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--green);
+    background: var(--green-bg);
+    border: 1px solid #1a4d23;
+    border-radius: 4px;
+    padding: 2px 7px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
   }
 
-  /* ── FOOTER ─────────────────────────────── */
+  .badge-soon {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--muted2);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .chevron {
+    color: var(--muted2);
+    font-size: 1rem;
+    line-height: 1;
+    font-family: var(--mono);
+  }
+
+  /* ── FOOTER ────────────────────────────────── */
   footer {
     text-align: center;
     padding-bottom: 32px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    color: #9aadbe;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted2);
   }
+  footer span { color: var(--accent); }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="brand">Finanzas <span>ARG</span></div>
+  <div class="brand">Finanzas<span>.ARG</span></div>
   <div class="topbar-divider"></div>
-  <span class="topbar-sub">herramientas para el mercado argentino</span>
+  <span class="topbar-sub">mercado argentino + global</span>
+  <div class="topbar-dot"></div>
 </div>
 
 <div class="hero">
-  <h1>¿Qué querés analizar hoy?</h1>
-  <p>Seleccioná una herramienta para comenzar.</p>
+  <div class="hero-prompt">~/finanzas-arg $</div>
+  <h1>¿Qué querés<br><em>analizar hoy?</em></h1>
+  <p>Seleccioná una herramienta para comenzar._</p>
 </div>
 
 <div class="main">
@@ -230,43 +297,43 @@
     <div class="section-label"><span>Finanzas</span></div>
     <div class="item-list">
 
-      <a class="item" href="acciones/index.html" style="--c:#22c55e; --ib:#f0fdf5;">
-        <div class="item-icon">📈</div>
+      <a class="item" href="acciones/index.html" style="--c:#3fb950;">
+        <div class="item-icon" style="--ib:#0d1f12;">📈</div>
         <div class="item-text">
-          <div class="item-title">Acciones</div>
+          <div class="item-title">Acciones ARG</div>
           <div class="item-desc">Retornos, heatmap y volumen inusual del mercado local.</div>
         </div>
         <div class="item-right">
-          <span class="badge-live">Disponible</span>
+          <span class="badge-live">live</span>
           <span class="chevron">›</span>
         </div>
       </a>
 
-      <a class="item disabled" href="#" style="--c:#f59e0b; --ib:#fffbeb;">
-        <div class="item-icon">💵</div>
+      <a class="item disabled" href="#" style="--c:#f59e0b;">
+        <div class="item-icon" style="--ib:#1c1a0f;">💵</div>
         <div class="item-text">
           <div class="item-title">Carry Trade</div>
           <div class="item-desc">Compará bonos para optimizar una estrategia de carry.</div>
         </div>
-        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+        <div class="item-right"><span class="badge-soon">pronto</span></div>
       </a>
 
-      <a class="item disabled" href="#" style="--c:#8b5cf6; --ib:#f5f3ff;">
-        <div class="item-icon">📋</div>
+      <a class="item disabled" href="#" style="--c:#8b5cf6;">
+        <div class="item-icon" style="--ib:#160f2a;">📋</div>
         <div class="item-text">
           <div class="item-title">Duales TAMAR</div>
           <div class="item-desc">Análisis de bonos duales atados a tasa TAMAR.</div>
         </div>
-        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+        <div class="item-right"><span class="badge-soon">pronto</span></div>
       </a>
 
-      <a class="item disabled" href="#" style="--c:#06b6d4; --ib:#ecfeff;">
-        <div class="item-icon">📊</div>
+      <a class="item disabled" href="#" style="--c:#06b6d4;">
+        <div class="item-icon" style="--ib:#061a1f;">📊</div>
         <div class="item-text">
           <div class="item-title">Renta Fija</div>
           <div class="item-desc">Encontrá el mejor bono para invertir según tu perfil.</div>
         </div>
-        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+        <div class="item-right"><span class="badge-soon">pronto</span></div>
       </a>
 
     </div>
@@ -277,25 +344,25 @@
     <div class="section-label"><span>Internacional</span></div>
     <div class="item-list">
 
-      <a class="item" href="dashboard-internacional/index.html" style="--c:#3b82f6; --ib:#eff6ff;">
-        <div class="item-icon">🌎</div>
+      <a class="item" href="dashboard-internacional/index.html" style="--c:#58a6ff;">
+        <div class="item-icon" style="--ib:#0d1a2e;">🌎</div>
         <div class="item-text">
           <div class="item-title">S&amp;P 500</div>
           <div class="item-desc">Retornos, heatmap sectorial y volumen inusual del mercado americano.</div>
         </div>
         <div class="item-right">
-          <span class="badge-live">Disponible</span>
+          <span class="badge-live">live</span>
           <span class="chevron">›</span>
         </div>
       </a>
 
-      <a class="item disabled" href="#" style="--c:#6366f1; --ib:#eef2ff;">
-        <div class="item-icon">🌍</div>
+      <a class="item disabled" href="#" style="--c:#6366f1;">
+        <div class="item-icon" style="--ib:#111226;">🌍</div>
         <div class="item-text">
           <div class="item-title">Europa / Otros índices</div>
           <div class="item-desc">Análisis de mercados europeos y otros índices globales.</div>
         </div>
-        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+        <div class="item-right"><span class="badge-soon">pronto</span></div>
       </a>
 
     </div>
@@ -306,34 +373,34 @@
     <div class="section-label"><span>BCRA</span></div>
     <div class="item-list">
 
-      <a class="item" href="bcra/index.html" style="--c:#4361ee; --ib:#eef1fb;">
-        <div class="item-icon">🏦</div>
+      <a class="item" href="bcra/index.html" style="--c:#58a6ff;">
+        <div class="item-icon" style="--ib:#0d1a2e;">🏦</div>
         <div class="item-text">
           <div class="item-title">Macroeconomía</div>
           <div class="item-desc">Reservas, tipo de cambio, inflación, base monetaria y más.</div>
         </div>
         <div class="item-right">
-          <span class="badge-live">Disponible</span>
+          <span class="badge-live">live</span>
           <span class="chevron">›</span>
         </div>
       </a>
 
-      <a class="item disabled" href="#" style="--c:#ef4444; --ib:#fef2f2;">
-        <div class="item-icon">🔍</div>
+      <a class="item disabled" href="#" style="--c:#ef4444;">
+        <div class="item-icon" style="--ib:#1f0d0d;">🔍</div>
         <div class="item-text">
           <div class="item-title">Central de Deudores</div>
           <div class="item-desc">Consultá situación crediticia en el sistema financiero.</div>
         </div>
-        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+        <div class="item-right"><span class="badge-soon">pronto</span></div>
       </a>
 
-      <a class="item disabled" href="#" style="--c:#f97316; --ib:#fff7ed;">
-        <div class="item-icon">🧮</div>
+      <a class="item disabled" href="#" style="--c:#f97316;">
+        <div class="item-icon" style="--ib:#1f1308;">🧮</div>
         <div class="item-text">
           <div class="item-title">Calculadora de Inflación</div>
           <div class="item-desc">Actualizá valores históricos usando IPC oficial.</div>
         </div>
-        <div class="item-right"><span class="badge-soon">Próximamente</span></div>
+        <div class="item-right"><span class="badge-soon">pronto</span></div>
       </a>
 
     </div>
@@ -344,14 +411,14 @@
     <div class="section-label"><span>Noticias</span></div>
     <div class="item-list">
 
-      <a class="item" href="noticias/index.html" style="--c:#0891b2; --ib:#ecfeff;">
-        <div class="item-icon">📰</div>
+      <a class="item" href="noticias/index.html" style="--c:#0891b2;">
+        <div class="item-icon" style="--ib:#061518;">📰</div>
         <div class="item-text">
           <div class="item-title">Noticias Financieras</div>
           <div class="item-desc">Últimas noticias de medios nacionales e internacionales.</div>
         </div>
         <div class="item-right">
-          <span class="badge-live">Disponible</span>
+          <span class="badge-live">live</span>
           <span class="chevron">›</span>
         </div>
       </a>
@@ -361,7 +428,9 @@
 
 </div>
 
-<footer>Datos desde API BCRA y fuentes públicas · Uso personal</footer>
+<footer>
+  <span>finanzas.arg</span> · datos desde API BCRA y fuentes públicas · uso personal
+</footer>
 
 </body>
 </html>
