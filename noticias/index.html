@@ -8,11 +8,12 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:#f1f5f9;--surface:#fff;--border:#e2e8f0;--text-main:#0f172a;--text-muted:#64748b;
-      --blue:#3b82f6;--slate:#94a3b8;
+      --bg:#0d1117;--surface:#161b22;--surface2:#1c2128;--border:#30363d;--border2:#21262d;
+      --text:#e6edf3;--muted:#8b949e;--muted2:#6e7681;
+      --blue:#58a6ff;--slate:#8b949e;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-main);padding:28px 20px 60px;line-height:1.6;}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);padding:28px 20px 60px;line-height:1.6;}
     .page-wrap{max-width:1380px;margin:0 auto;}
 
     /* HEADER */
@@ -24,15 +25,15 @@
 
     /* SECCIÓN DESTACADAS */
     .section-label{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
-    .section-label span{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--slate);white-space:nowrap;font-family:'DM Mono',monospace;}
+    .section-label span{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);white-space:nowrap;font-family:'DM Mono',monospace;}
     .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
     .dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px;}
-    .dest-col-title{font-size:0.88rem;font-weight:600;margin-bottom:12px;color:var(--text-main);}
+    .dest-col-title{font-size:0.88rem;font-weight:600;margin-bottom:12px;color:var(--text);}
     .dest-card{display:flex;gap:14px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:10px;text-decoration:none;color:inherit;transition:box-shadow .15s,border-color .15s;}
-    .dest-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.07);border-color:#bfdbfe;}
-    .dest-num{font-size:1.4rem;font-weight:700;font-family:'DM Mono',monospace;color:#cbd5e1;line-height:1;padding-top:2px;flex-shrink:0;min-width:24px;}
+    .dest-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.4);border-color:var(--blue);}
+    .dest-num{font-size:1.4rem;font-weight:700;font-family:'DM Mono',monospace;color:var(--muted2);line-height:1;padding-top:2px;flex-shrink:0;min-width:24px;}
     .dest-body{flex:1;min-width:0;}
-    .dest-title{font-size:0.92rem;font-weight:600;color:var(--text-main);line-height:1.4;margin-bottom:6px;}
+    .dest-title{font-size:0.92rem;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:6px;}
 
     /* GRID DE COLUMNAS */
     .news-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
@@ -42,22 +43,22 @@
     .news-col{display:flex;flex-direction:column;gap:0;}
     .col-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
     .col-title{font-size:1rem;font-weight:600;}
-    .col-count{font-size:0.72rem;font-family:'DM Mono',monospace;background:#eff6ff;color:var(--blue);border:1px solid #bfdbfe;border-radius:99px;padding:2px 10px;margin-left:auto;}
-    .col-sources{font-size:0.73rem;color:var(--slate);margin-bottom:14px;font-family:'DM Mono',monospace;}
+    .col-count{font-size:0.72rem;font-family:'DM Mono',monospace;background:rgba(88,166,255,0.1);color:var(--blue);border:1px solid rgba(88,166,255,0.25);border-radius:99px;padding:2px 10px;margin-left:auto;}
+    .col-sources{font-size:0.73rem;color:var(--muted);margin-bottom:14px;font-family:'DM Mono',monospace;}
 
     /* CARD */
     .news-card{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:10px;text-decoration:none;color:inherit;transition:box-shadow .15s,border-color .15s;}
-    .news-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.07);border-color:#bfdbfe;}
+    .news-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.4);border-color:var(--blue);}
     .news-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
     .source-badge{font-size:0.68rem;font-weight:600;font-family:'DM Mono',monospace;border:1px solid;border-radius:99px;padding:2px 9px;white-space:nowrap;}
-    .news-date{font-size:0.72rem;color:var(--slate);font-family:'DM Mono',monospace;margin-left:auto;white-space:nowrap;}
-    .news-title{font-size:0.9rem;font-weight:600;color:var(--text-main);margin-bottom:6px;line-height:1.4;}
-    .news-summary{font-size:0.79rem;color:var(--text-muted);line-height:1.55;margin-bottom:10px;}
+    .news-date{font-size:0.72rem;color:var(--muted);font-family:'DM Mono',monospace;margin-left:auto;white-space:nowrap;}
+    .news-title{font-size:0.9rem;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.4;}
+    .news-summary{font-size:0.79rem;color:var(--muted);line-height:1.55;margin-bottom:10px;}
     .read-more{font-size:0.72rem;color:var(--blue);font-family:'DM Mono',monospace;font-weight:500;}
-    .empty-msg{color:var(--slate);font-size:0.88rem;padding:20px 0;}
+    .empty-msg{color:var(--muted);font-size:0.88rem;padding:20px 0;}
 
     /* FOOTER */
-    .page-footer{text-align:center;margin-top:48px;font-size:0.78rem;color:var(--slate);font-family:'DM Mono',monospace;}
+    .page-footer{text-align:center;margin-top:48px;font-size:0.78rem;color:var(--muted);font-family:'DM Mono',monospace;}
   </style>
 </head>
 <body>
@@ -74,77 +75,77 @@
     <div>
       <div class="dest-col-title">🇦🇷 Nacionales</div>
       
-        <a class="dest-card" href="https://www.ambito.com/economia/como-se-encuentra-el-plazo-fijo-asi-operan-los-bancos-hoy-miercoles-25-febrero-n6249309" target="_blank" rel="noopener noreferrer">
+        <a class="dest-card" href="https://www.lanacion.com.ar/salud/como-es-el-ejercicio-de-menos-de-un-minuto-que-tonifica-espalda-abdomen-y-brazos-nid25022026/" target="_blank" rel="noopener noreferrer">
           <span class="dest-num">1</span>
           <div class="dest-body">
             <div class="news-meta">
-              <span class="source-badge" style="color:#2563eb;background:#2563eb18;border-color:#2563eb35;">Ámbito</span>
-              <span class="news-date">25/02 11:39</span>
+              <span class="source-badge" style="color:#7c3aed;background:#7c3aed18;border-color:#7c3aed35;">La Nación</span>
+              <span class="news-date">25/02 17:01</span>
             </div>
-            <div class="dest-title">¿Cómo se encuentra el plazo fijo? Así operan los bancos hoy, miércoles 25 de febrero</div>
-            <div class="news-summary">Cotizaciones de rendimiento y cómo impactan las expectativas de inflación en ahorristas argentinos.</div>
+            <div class="dest-title">Cómo es el ejercicio de menos de un minuto que tonifica espalda, abdomen y brazos</div>
+            <div class="news-summary">Este simple ejercicio de suspensión revitaliza capacidades físicas y cognitivas y fortalece la concentración, según especialistas.</div>
           </div>
         </a>
 
-        <a class="dest-card" href="https://www.ambito.com/economia/empleadas-domesticas-acordaron-un-aumento-salarial-del-3-y-el-pago-un-bono-n6249288" target="_blank" rel="noopener noreferrer">
+        <a class="dest-card" href="https://www.lanacion.com.ar/politica/javier-milei-en-vivo-las-ultimas-medidas-del-gobierno-nid25022026/" target="_blank" rel="noopener noreferrer">
           <span class="dest-num">2</span>
           <div class="dest-body">
             <div class="news-meta">
-              <span class="source-badge" style="color:#2563eb;background:#2563eb18;border-color:#2563eb35;">Ámbito</span>
-              <span class="news-date">25/02 11:09</span>
+              <span class="source-badge" style="color:#7c3aed;background:#7c3aed18;border-color:#7c3aed35;">La Nación</span>
+              <span class="news-date">25/02 16:59</span>
             </div>
-            <div class="dest-title">Empleadas domésticas acordaron un aumento salarial del 3% y el pago de un bono</div>
-            <div class="news-summary">El acuerdo fue confirmado por la Comisión Nacional de Trabajo en Casas Particulares (CNTCP). El mismo se pagará en dos tramos en los meses de febrero y en marzo.</div>
+            <div class="dest-title">Javier Milei, en vivo: las últimas medidas del Gobierno</div>
+            <div class="news-summary">El minuto a minuto de las decisiones del Presidente, las reacciones de la oposición y las declaraciones de los funcionarios</div>
           </div>
         </a>
 
-        <a class="dest-card" href="https://www.ambito.com/economia/el-comercio-electronico-crecio-mas-60-2025-y-se-consolida-como-el-sector-que-resiste-la-contraccion-del-consumo-n6249234" target="_blank" rel="noopener noreferrer">
+        <a class="dest-card" href="https://www.lanacion.com.ar/sociedad/una-argentina-relato-en-detalle-el-calvario-que-vive-desde-que-la-confundieron-en-ecuador-con-la-nid25022026/" target="_blank" rel="noopener noreferrer">
           <span class="dest-num">3</span>
           <div class="dest-body">
             <div class="news-meta">
-              <span class="source-badge" style="color:#2563eb;background:#2563eb18;border-color:#2563eb35;">Ámbito</span>
-              <span class="news-date">25/02 11:05</span>
+              <span class="source-badge" style="color:#7c3aed;background:#7c3aed18;border-color:#7c3aed35;">La Nación</span>
+              <span class="news-date">25/02 16:58</span>
             </div>
-            <div class="dest-title">El comercio electrónico creció más de 60% en 2025 y se consolida como el sector que resiste la contracción del consumo</div>
-            <div class="news-summary">Pese al avance de Shein y Temu y a la presión sobre los márgenes, el sector mantuvo crecimiento real en volumen y obligó a las marcas locales a reconvertir su estrategia.</div>
+            <div class="dest-title">Una argentina relató en detalle el calvario que vive desde que la confundieron en Ecuador con la novia de un narco</div>
+            <div class="news-summary">En diálogo con LN+, Micaela Morales apuntó contra Ecuavisa, un canal de televisión de ese país; “Entré en un estado de pánico”, manifestó la joven de 28 años</div>
           </div>
         </a>
     </div>
     <div>
       <div class="dest-col-title">🌎 Internacionales</div>
       
-        <a class="dest-card" href="https://finance.yahoo.com/news/project-ramp-ups-capacity-expansions-150342239.html" target="_blank" rel="noopener noreferrer">
+        <a class="dest-card" href="https://finance.yahoo.com/news/avista-ava-q4-2025-earnings-165229783.html" target="_blank" rel="noopener noreferrer">
           <span class="dest-num">1</span>
           <div class="dest-body">
             <div class="news-meta">
               <span class="source-badge" style="color:#6d28d9;background:#6d28d918;border-color:#6d28d935;">Yahoo Finance</span>
               <span class="news-date"></span>
             </div>
-            <div class="dest-title">Project ramp-ups and capacity expansions to increase Australian coal output in 2026</div>
+            <div class="dest-title">Avista (AVA) Q4 2025 Earnings Call Transcript</div>
             <div class="news-summary"></div>
           </div>
         </a>
 
-        <a class="dest-card" href="https://finance.yahoo.com/news/shoemaker-steven-madden-withholds-profit-143331423.html" target="_blank" rel="noopener noreferrer">
+        <a class="dest-card" href="https://finance.yahoo.com/personal-finance/investing/article/thinking-of-buying-nvidia-stock-consider-also-buying-dozens-just-like-it-173538194.html" target="_blank" rel="noopener noreferrer">
           <span class="dest-num">2</span>
           <div class="dest-body">
             <div class="news-meta">
               <span class="source-badge" style="color:#6d28d9;background:#6d28d918;border-color:#6d28d935;">Yahoo Finance</span>
               <span class="news-date"></span>
             </div>
-            <div class="dest-title">Shoemaker Steven Madden withholds profit forecast on tariff uncertainty</div>
+            <div class="dest-title">Thinking of buying Nvidia stock? Consider also buying dozens just like it.</div>
             <div class="news-summary"></div>
           </div>
         </a>
 
-        <a class="dest-card" href="https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-rise-with-nvidia-earnings-looming-as-gut-check-for-ai-trade-143448982.html" target="_blank" rel="noopener noreferrer">
+        <a class="dest-card" href="https://finance.yahoo.com/news/5-industries-that-have-gotten-rocked-by-the-ai-scare-trade-defining-markets-this-year-164746958.html" target="_blank" rel="noopener noreferrer">
           <span class="dest-num">3</span>
           <div class="dest-body">
             <div class="news-meta">
               <span class="source-badge" style="color:#6d28d9;background:#6d28d918;border-color:#6d28d935;">Yahoo Finance</span>
               <span class="news-date"></span>
             </div>
-            <div class="dest-title">Stock market today: Dow, S&P 500, Nasdaq rise with Nvidia earnings looming as gut check for AI trade</div>
+            <div class="dest-title">5 industries that have gotten rocked by the AI 'scare trade' defining markets this year</div>
             <div class="news-summary"></div>
           </div>
         </a>
@@ -158,104 +159,54 @@
     <div class="news-col">
       <div class="col-header">
         <span class="col-title">🇦🇷 Nacionales</span>
-        <span class="col-count">10 artículos</span>
+        <span class="col-count">5 artículos</span>
       </div>
       <div class="col-sources">Fuentes: Ámbito · La Nación · Infobae</div>
       
-        <a class="news-card" href="https://www.ambito.com/economia/como-se-encuentra-el-plazo-fijo-asi-operan-los-bancos-hoy-miercoles-25-febrero-n6249309" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.lanacion.com.ar/salud/como-es-el-ejercicio-de-menos-de-un-minuto-que-tonifica-espalda-abdomen-y-brazos-nid25022026/" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
-            <span class="source-badge" style="color:#2563eb;background:#2563eb18;border-color:#2563eb35;">Ámbito</span>
-            <span class="news-date">25/02 11:39</span>
+            <span class="source-badge" style="color:#7c3aed;background:#7c3aed18;border-color:#7c3aed35;">La Nación</span>
+            <span class="news-date">25/02 17:01</span>
           </div>
-          <div class="news-title">¿Cómo se encuentra el plazo fijo? Así operan los bancos hoy, miércoles 25 de febrero</div>
-          <div class="news-summary">Cotizaciones de rendimiento y cómo impactan las expectativas de inflación en ahorristas argentinos.</div>
+          <div class="news-title">Cómo es el ejercicio de menos de un minuto que tonifica espalda, abdomen y brazos</div>
+          <div class="news-summary">Este simple ejercicio de suspensión revitaliza capacidades físicas y cognitivas y fortalece la concentración, según especialistas.</div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.ambito.com/economia/empleadas-domesticas-acordaron-un-aumento-salarial-del-3-y-el-pago-un-bono-n6249288" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.lanacion.com.ar/politica/javier-milei-en-vivo-las-ultimas-medidas-del-gobierno-nid25022026/" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
-            <span class="source-badge" style="color:#2563eb;background:#2563eb18;border-color:#2563eb35;">Ámbito</span>
-            <span class="news-date">25/02 11:09</span>
+            <span class="source-badge" style="color:#7c3aed;background:#7c3aed18;border-color:#7c3aed35;">La Nación</span>
+            <span class="news-date">25/02 16:59</span>
           </div>
-          <div class="news-title">Empleadas domésticas acordaron un aumento salarial del 3% y el pago de un bono</div>
-          <div class="news-summary">El acuerdo fue confirmado por la Comisión Nacional de Trabajo en Casas Particulares (CNTCP). El mismo se pagará en dos tramos en los meses de febrero y en marzo.</div>
+          <div class="news-title">Javier Milei, en vivo: las últimas medidas del Gobierno</div>
+          <div class="news-summary">El minuto a minuto de las decisiones del Presidente, las reacciones de la oposición y las declaraciones de los funcionarios</div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.ambito.com/economia/el-comercio-electronico-crecio-mas-60-2025-y-se-consolida-como-el-sector-que-resiste-la-contraccion-del-consumo-n6249234" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.lanacion.com.ar/sociedad/una-argentina-relato-en-detalle-el-calvario-que-vive-desde-que-la-confundieron-en-ecuador-con-la-nid25022026/" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
-            <span class="source-badge" style="color:#2563eb;background:#2563eb18;border-color:#2563eb35;">Ámbito</span>
-            <span class="news-date">25/02 11:05</span>
+            <span class="source-badge" style="color:#7c3aed;background:#7c3aed18;border-color:#7c3aed35;">La Nación</span>
+            <span class="news-date">25/02 16:58</span>
           </div>
-          <div class="news-title">El comercio electrónico creció más de 60% en 2025 y se consolida como el sector que resiste la contracción del consumo</div>
-          <div class="news-summary">Pese al avance de Shein y Temu y a la presión sobre los márgenes, el sector mantuvo crecimiento real en volumen y obligó a las marcas locales a reconvertir su estrategia.</div>
-          <span class="read-more">Leer nota →</span>
-        </a>
-
-        <a class="news-card" href="https://www.ambito.com/economia/actividad-industrial-cayo-44-enero" target="_blank" rel="noopener noreferrer">
-          <div class="news-meta">
-            <span class="source-badge" style="color:#2563eb;background:#2563eb18;border-color:#2563eb35;">Ámbito</span>
-            <span class="news-date">25/02 10:35</span>
-          </div>
-          <div class="news-title">La actividad industrial cayó 4,4% interanual en enero, pero repuntó respecto de diciembre</div>
-          <div class="news-summary">El informe de Orlando Ferreres y Asociados aclaró que los cálculos de enero y febrero pueden incluir algunas distorsiones por la estacionalidad. Advierten sobre "tensiones en la industria", producto de la baja del consum…</div>
-          <span class="read-more">Leer nota →</span>
-        </a>
-
-        <a class="news-card" href="https://www.ambito.com/economia/el-outlet-un-supermercado-primera-linea-ofrece-heladeras-30-descuento-pero-tiempo-limitado-n6248811" target="_blank" rel="noopener noreferrer">
-          <div class="news-meta">
-            <span class="source-badge" style="color:#2563eb;background:#2563eb18;border-color:#2563eb35;">Ámbito</span>
-            <span class="news-date">25/02 09:00</span>
-          </div>
-          <div class="news-title">El outlet de un supermercado de primera línea ofrece heladeras con hasta 30% de descuento, pero por tiempo limitado</div>
-          <div class="news-summary">Este supermercado, reconocido por las ofertas para sus clientes, ofrece descuentos exclusivos en su outlet sobre heladeras y electrodomésticos.</div>
+          <div class="news-title">Una argentina relató en detalle el calvario que vive desde que la confundieron en Ecuador con la novia de un narco</div>
+          <div class="news-summary">En diálogo con LN+, Micaela Morales apuntó contra Ecuavisa, un canal de televisión de ese país; “Entré en un estado de pánico”, manifestó la joven de 28 años</div>
           <span class="read-more">Leer nota →</span>
         </a>
 
         <a class="news-card" href="https://www.lanacion.com.ar/tecnologia/samsung-presenta-su-nueva-linea-de-celulares-galaxy-s26-en-el-evento-unpacked-2026-todos-los-rumores-nid25022026/" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#7c3aed;background:#7c3aed18;border-color:#7c3aed35;">La Nación</span>
-            <span class="news-date">25/02 15:14</span>
+            <span class="news-date">25/02 16:58</span>
           </div>
           <div class="news-title">Samsung presenta su nueva línea de celulares Galaxy S26 en el evento Unpacked 2026: todos los rumores</div>
           <div class="news-summary">Se trata del evento con el que la marca abre el calendario de lanzamientos de la industria móvil; cuáles son las nuevas funciones, a partir de cuándo se podrá adquirir y cuánto cuesta</div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.lanacion.com.ar/economia/dolar/dolar-oficial-y-blue-en-vivo-a-cuanto-cotiza-hoy-miercoles-25-de-febrero-nid25022026/" target="_blank" rel="noopener noreferrer">
-          <div class="news-meta">
-            <span class="source-badge" style="color:#7c3aed;background:#7c3aed18;border-color:#7c3aed35;">La Nación</span>
-            <span class="news-date">25/02 15:13</span>
-          </div>
-          <div class="news-title">Dólar oficial y blue en vivo: el precio sube $5 este miércoles 25 de febrero</div>
-          <div class="news-summary">La divisa oficial opera a $1405 para la venta; el dólar informal, en el mercado paralelo, se ubica a $1430 para la misma operación</div>
-          <span class="read-more">Leer nota →</span>
-        </a>
-
-        <a class="news-card" href="https://www.lanacion.com.ar/politica/con-una-leve-baja-en-febrero-el-indice-de-confianza-en-el-gobierno-acumula-tres-meses-consecutivos-nid25022026/" target="_blank" rel="noopener noreferrer">
-          <div class="news-meta">
-            <span class="source-badge" style="color:#7c3aed;background:#7c3aed18;border-color:#7c3aed35;">La Nación</span>
-            <span class="news-date">25/02 15:12</span>
-          </div>
-          <div class="news-title">Con una leve baja en febrero, el índice de confianza en el Gobierno acumula tres meses consecutivos de caída</div>
-          <div class="news-summary">Midió 2,47 este mes, lo que representa una baja 0,6% respecto de enero; lo elabora la Universidad Torcuato Di Tella desde 2001</div>
-          <span class="read-more">Leer nota →</span>
-        </a>
-
-        <a class="news-card" href="https://www.lanacion.com.ar/espectaculos/robbie-williams-en-movistar-arena-la-fecha-del-show-y-como-sacar-entradas-nid24022026/" target="_blank" rel="noopener noreferrer">
-          <div class="news-meta">
-            <span class="source-badge" style="color:#7c3aed;background:#7c3aed18;border-color:#7c3aed35;">La Nación</span>
-            <span class="news-date">25/02 15:12</span>
-          </div>
-          <div class="news-title">Robbie Williams en Movistar Arena: la fecha del show, precios y cómo sacar entradas</div>
-          <div class="news-summary">El cantante británico vuelve al país tras 20 años de su último show; ¿a qué hora salen a la venta los tickets?</div>
-          <span class="read-more">Leer nota →</span>
-        </a>
-
         <a class="news-card" href="https://www.lanacion.com.ar/estados-unidos/nueva-york/noticias-de-new-york-en-vivo-actualizaciones-de-hoy-miercoles-25-de-febrero-de-2026-nid25022026/" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#7c3aed;background:#7c3aed18;border-color:#7c3aed35;">La Nación</span>
-            <span class="news-date">25/02 15:12</span>
+            <span class="news-date">25/02 16:57</span>
           </div>
           <div class="news-title">Noticias de New York, en vivo: Hochul trata de mentiroso a Trump por su discurso y reportes de hoy, miércoles 25 de febrero</div>
           <div class="news-summary">Live coverage of New York news: new laws, cold weather and announcements from Zohran Mamdani and Kathy Hochul — all the minute-by-minute updates this Wednesday, February 25</div>
@@ -270,113 +221,113 @@
       </div>
       <div class="col-sources">Fuentes: Yahoo Finance · MarketWatch · CNBC</div>
       
-        <a class="news-card" href="https://finance.yahoo.com/news/project-ramp-ups-capacity-expansions-150342239.html" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://finance.yahoo.com/news/avista-ava-q4-2025-earnings-165229783.html" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#6d28d9;background:#6d28d918;border-color:#6d28d935;">Yahoo Finance</span>
             <span class="news-date"></span>
           </div>
-          <div class="news-title">Project ramp-ups and capacity expansions to increase Australian coal output in 2026</div>
+          <div class="news-title">Avista (AVA) Q4 2025 Earnings Call Transcript</div>
           <div class="news-summary"></div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://finance.yahoo.com/news/shoemaker-steven-madden-withholds-profit-143331423.html" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://finance.yahoo.com/personal-finance/investing/article/thinking-of-buying-nvidia-stock-consider-also-buying-dozens-just-like-it-173538194.html" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#6d28d9;background:#6d28d918;border-color:#6d28d935;">Yahoo Finance</span>
             <span class="news-date"></span>
           </div>
-          <div class="news-title">Shoemaker Steven Madden withholds profit forecast on tariff uncertainty</div>
+          <div class="news-title">Thinking of buying Nvidia stock? Consider also buying dozens just like it.</div>
           <div class="news-summary"></div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-rise-with-nvidia-earnings-looming-as-gut-check-for-ai-trade-143448982.html" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://finance.yahoo.com/news/5-industries-that-have-gotten-rocked-by-the-ai-scare-trade-defining-markets-this-year-164746958.html" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#6d28d9;background:#6d28d918;border-color:#6d28d935;">Yahoo Finance</span>
             <span class="news-date"></span>
           </div>
-          <div class="news-title">Stock market today: Dow, S&P 500, Nasdaq rise with Nvidia earnings looming as gut check for AI trade</div>
+          <div class="news-title">5 industries that have gotten rocked by the AI 'scare trade' defining markets this year</div>
           <div class="news-summary"></div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.investors.com/news/data-center-builder-everus-earnings-stock-market-awaits-nvidia/?src=A00220&yptr=yahoo" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.investors.com/news/technology/nvidia-stock-nvda-fiscal-q4-2026-earnings/?src=A00220&yptr=yahoo" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#6d28d9;background:#6d28d918;border-color:#6d28d935;">Yahoo Finance</span>
             <span class="news-date"></span>
           </div>
-          <div class="news-title">The Market Awaits Nvidia, But This Data Center Builder Already Soars On Earnings</div>
+          <div class="news-title">Nvidia Rallies 2% Ahead Of AI Giant's Report (Live Coverage)</div>
           <div class="news-summary"></div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.investors.com/news/technology/oracle-stock-upgrade-buy-oppenheimer/?src=A00220&yptr=yahoo" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://finance.yahoo.com/news/expedia-expe-target-reduced-citigroup-164551226.html" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#6d28d9;background:#6d28d918;border-color:#6d28d935;">Yahoo Finance</span>
             <span class="news-date"></span>
           </div>
-          <div class="news-title">Oracle Stock Upgraded To Buy As Analyst Sees Upside Following Sell Off</div>
+          <div class="news-title">Expedia (EXPE) Target Reduced by Citigroup Following Latest Results</div>
           <div class="news-summary"></div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.marketwatch.com/story/i-am-fearful-my-ailing-relative-is-being-forced-into-assisted-living-what-can-i-do-7ce8b42a?mod=mw_rss_topstories" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.marketwatch.com/story/cava-says-diners-are-doing-better-this-year-and-could-be-getting-tired-of-chasing-meal-deals-25d062fe?mod=mw_rss_topstories" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#0891b2;background:#0891b218;border-color:#0891b235;">MarketWatch</span>
-            <span class="news-date">25/02 15:16</span>
+            <span class="news-date">25/02 17:01</span>
           </div>
-          <div class="news-title">‘I am fearful’: My ailing relative is being forced into assisted living. What can I do?</div>
-          <div class="news-summary">“My relative also has no idea what they are being charged for these services.”</div>
+          <div class="news-title">Cava’s stock rockets, as people are returning to food they like — not just what’s cheap</div>
+          <div class="news-summary">Cava issued an upbeat sales forecast for the year, as cautious customers shook off the effects of snowstorms and last year’s government shutdown to return to the Mediterranean fast-casual chain for bowls and salads.</div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.marketwatch.com/story/american-tequila-sales-are-collapsing-diageo-is-cutting-its-dividend-in-half-3fc34adb?mod=mw_rss_topstories" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.marketwatch.com/story/need-a-side-hustle-to-support-your-retirement-dreams-heres-how-to-find-work-right-now-6438bea8?mod=mw_rss_topstories" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#0891b2;background:#0891b218;border-color:#0891b235;">MarketWatch</span>
-            <span class="news-date">25/02 14:48</span>
+            <span class="news-date">25/02 17:00</span>
           </div>
-          <div class="news-title">American tequila sales are collapsing. Diageo is cutting its dividend in half.</div>
-          <div class="news-summary">Diageo on Wednesday said it was cutting its dividend in half as it reduced its sales outlook, citing American consumer reluctance to spend due to affordability concerns.</div>
+          <div class="news-title">Need a side hustle to support your retirement dreams? Here’s how to find work right now.</div>
+          <div class="news-summary">7 tips for navigating this tricky job market.</div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.marketwatch.com/story/after-46-years-working-im-not-retiring-instead-i-take-a-vacation-every-month-is-that-a-good-life-in-your-70s-447f7c75?mod=mw_rss_topstories" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.marketwatch.com/story/trump-digs-in-his-heels-on-tariffs-with-major-implications-for-the-u-s-dollar-6b31badd?mod=mw_rss_topstories" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#0891b2;background:#0891b218;border-color:#0891b235;">MarketWatch</span>
-            <span class="news-date">25/02 14:45</span>
+            <span class="news-date">25/02 16:40</span>
           </div>
-          <div class="news-title">After 46 years working, I’m not retiring — instead, I take a vacation every month. Is that a good life in your 70s?</div>
-          <div class="news-summary">“I’ve owned my own company for the last 15 years. It’s worth $8.5 million.”</div>
+          <div class="news-title">Trump digs in his heels on tariffs — with major implications for the U.S. dollar</div>
+          <div class="news-summary">Market strategists were weighing in on President Donald Trump’s State of the Union address late Tuesday and coming away with some important implications for the U.S. dollar.</div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.marketwatch.com/story/why-this-investor-says-you-can-make-good-money-off-software-stocks-if-you-trade-them-like-telephone-directories-e4d15635?mod=mw_rss_topstories" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.marketwatch.com/story/david-tepper-sends-scathing-letter-to-whirlpools-board-heres-why-hes-so-upset-483e836a?mod=mw_rss_topstories" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#0891b2;background:#0891b218;border-color:#0891b235;">MarketWatch</span>
-            <span class="news-date">25/02 14:39</span>
+            <span class="news-date">25/02 16:22</span>
           </div>
-          <div class="news-title">Why this investor says you can make good money off software stocks — if you trade them like telephone directories</div>
-          <div class="news-summary">Deep value investor Lee Roach is looking at beaten-down software stocks for the first time ever.</div>
+          <div class="news-title">David Tepper sends scathing letter to Whirlpool’s board. Here’s why he’s so upset.</div>
+          <div class="news-summary">“Enough is enough,” the billionaire hedge-fund founder said, accusing Whirlpool of squandering millions of dollars in shareholder value.</div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.marketwatch.com/story/tj-maxx-parents-earnings-show-discount-clothes-and-home-goods-are-still-in-high-demand-90fb804d?mod=mw_rss_topstories" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.marketwatch.com/story/my-grandpa-retired-happy-at-70-with-750k-and-hes-doing-just-fine-i-know-where-most-americans-go-wrong-c5774943?mod=mw_rss_topstories" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#0891b2;background:#0891b218;border-color:#0891b235;">MarketWatch</span>
-            <span class="news-date">25/02 14:27</span>
+            <span class="news-date">25/02 16:00</span>
           </div>
-          <div class="news-title">TJ Maxx parent’s earnings show discount clothes and home goods are still in high demand</div>
-          <div class="news-summary">TJ Maxx parent company TJX reported a triple beat with its fourth-quarter results on Wednesday, but shares of the off-price apparel and home-fashions retailer slipped as the outlook disappointed.</div>
+          <div class="news-title">My grandpa retired happily at 70 with $750K after working as a missionary. I know where most Americans go wrong.</div>
+          <div class="news-summary">“You could even retire at 55 with $500,000 and be perfectly fine. Am I right?”</div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.cnbc.com/2026/02/25/david-tepper-sends-scathing-letter-to-whirlpool.html" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.cnbc.com/2026/02/25/lowes-low-q4-2025-earnings.html" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#dc2626;background:#dc262618;border-color:#dc262635;">CNBC</span>
-            <span class="news-date">25/02 14:23</span>
+            <span class="news-date">25/02 17:00</span>
           </div>
-          <div class="news-title">David Tepper sends scathing letter to Whirlpool for destroying shareholder value, pushes for changes</div>
-          <div class="news-summary">Tepper said he watched with "a certain astonishment" as the company issued equity in what he called a large and unnecessary dilution of shareholders.</div>
+          <div class="news-title">Lowe's CEO says the housing market is under pressure, even as the retailer's sales jump more than 10%</div>
+          <div class="news-summary">Lowe's posted more than 10% sales growth in the fourth quarter at a time when housing turnover and home improvement demand are slow.</div>
           <span class="read-more">Leer nota →</span>
         </a>
 
@@ -390,33 +341,33 @@
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.cnbc.com/2026/02/25/paramount-wbd-david-ellison-box-office-history.html" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.cnbc.com/2026/02/25/epstein-larry-summers-harvard-professor.html" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#dc2626;background:#dc262618;border-color:#dc262635;">CNBC</span>
-            <span class="news-date">25/02 13:00</span>
+            <span class="news-date">25/02 17:02</span>
           </div>
-          <div class="news-title">David Ellison has a rocky history at the box office. Buying Warner Bros. could fix that</div>
-          <div class="news-summary">Only five of Skydance's features to date — three of them starring Tom Cruise — have generated more than $200 million domestically.</div>
+          <div class="news-title">Epstein files: Larry Summers to resign as Harvard professor, reports say</div>
+          <div class="news-summary"></div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.cnbc.com/2026/02/25/axon-enterprise-axon-q4-2025-earnings.html" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.cnbc.com/2026/02/25/david-tepper-sends-scathing-letter-to-whirlpool.html" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#dc2626;background:#dc262618;border-color:#dc262635;">CNBC</span>
-            <span class="news-date">25/02 14:51</span>
+            <span class="news-date">25/02 15:36</span>
           </div>
-          <div class="news-title">Taser-maker Axon pops 18% as AI boosts demand for its software tools</div>
-          <div class="news-summary">CEO Rick Smith noted the impact of AI and said Axon is at a "moment unlike anything" he has seen since starting the company.</div>
+          <div class="news-title">David Tepper sends scathing letter to Whirlpool for destroying shareholder value, pushes for changes</div>
+          <div class="news-summary">Tepper said he watched with "a certain astonishment" as the company issued equity in what he called a large and unnecessary dilution of shareholders.</div>
           <span class="read-more">Leer nota →</span>
         </a>
 
-        <a class="news-card" href="https://www.cnbc.com/2026/02/25/first-look-at-nvidias-ai-system-vera-rubin-and-how-it-beats-blackwell.html" target="_blank" rel="noopener noreferrer">
+        <a class="news-card" href="https://www.cnbc.com/2026/02/25/epstein-files-richard-axel-quits-columbia-university-brain-institute.html" target="_blank" rel="noopener noreferrer">
           <div class="news-meta">
             <span class="source-badge" style="color:#dc2626;background:#dc262618;border-color:#dc262635;">CNBC</span>
-            <span class="news-date">25/02 13:00</span>
+            <span class="news-date">25/02 16:55</span>
           </div>
-          <div class="news-title">Nvidia’s new AI system Vera Rubin is 10 times more efficient than its predecessor — here’s a first look</div>
-          <div class="news-summary">CNBC got an exclusive first look at Vera Rubin, Nvidia's next AI system that's due to ship in the second half of the year</div>
+          <div class="news-title">Epstein files: Nobel winner Axel quits Columbia U. brain institute over friendship with predator</div>
+          <div class="news-summary">Dr. Richard Axel, a longtime Columbia University professor, is mentioned repeatedly in the Jeffrey Epstein files released by the Department of Justice.</div>
           <span class="read-more">Leer nota →</span>
         </a>
     </div>

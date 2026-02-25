@@ -77,14 +77,14 @@ noticias_nac = []
 for feed in FEEDS_NACIONALES:
     items = fetch_feed(feed)
     noticias_nac.extend(items)
-    print(f"  {'✓' if items else '✗'} {feed['name']}: {len(items)} artículos")
+    print(f"  {'OK' if items else 'ERR'} {feed['name']}: {len(items)} articulos")
 
 print("Obteniendo noticias internacionales...")
 noticias_int = []
 for feed in FEEDS_INTERNACIONALES:
     items = fetch_feed(feed)
     noticias_int.extend(items)
-    print(f"  {'✓' if items else '✗'} {feed['name']}: {len(items)} artículos")
+    print(f"  {'OK' if items else 'ERR'} {feed['name']}: {len(items)} articulos")
 
 noticias_nac = noticias_nac[:15]
 noticias_int = noticias_int[:15]
@@ -97,7 +97,7 @@ for n in noticias_int[:3]:
     traducido['title']   = translate_es(n['title'])
     traducido['summary'] = translate_es(n['summary'])
     dest_int.append(traducido)
-    print(f"  ✓ {traducido['source']}: traducido")
+    print(f"  OK {traducido['source']}: traducido")
 
 now_str  = datetime.utcnow().strftime('%Y-%m-%d  %H:%M UTC')
 date_str = datetime.utcnow().strftime('%Y-%m-%d')
