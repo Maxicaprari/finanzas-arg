@@ -332,6 +332,462 @@ footer a:hover{text-decoration:underline;}
 // ── DATOS inyectados por generate_dashboard_v2.py ────────────────────────────
 // PLACEHOLDER_DATA — el script reemplaza esta línea con los datos reales
 const ALL_DATA = {};
+const ZERO_BASED = new Set([1, 15, 27]);
+
+const CARD_IDS = [1, 4, 5, 7, 12, 15, 27];
+const WIDE_IDS = new Set([15]);
+const ID_TC4=4, ID_TC5=5, ID_BADLAR=7, ID_PF=12, ID_INF=27;
+
+let currentDias = 365;
+const MA_STATE   = {};
+const VIEW_STATE = {};
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function filterByDays(id, dias) {
+  const d = ALL_DATA[id];
+  if (!d || !d.fechas.length) return [[], []];
+  if (dias >= 9000) return [d.fechas.slice(), d.valores.slice()];
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - dias);
+  const pairs = d.fechas.map((f,i)=>[f,d.valores[i]]).filter(([f])=>new Date(f)>=cutoff);
+  return [pairs.map(p=>p[0]), pairs.map(p=>p[1])];
+}
+
+function yRange(vals, zeroBased=false) {
+  if (!vals || !vals.length) return undefined;
+  const mn=Math.min(...vals), mx=Math.max(...vals);
+  const mg=(mx-mn)*0.08||Math.abs(mx)*0.05;
+  return zeroBased ? [0, mx*1.08] : [mn-mg, mx+mg];
+}
+
+function stats(vals) {
+  if (!vals || !vals.length) return null;
+  const n=vals.length, last=vals[n-1], first=vals[0];
+  const mx=Math.max(...vals), mn=Math.min(...vals);
+  const avg=vals.reduce((a,b)=>a+b,0)/n;
+  const std=Math.sqrt(vals.reduce((a,v)=>a+(v-avg)**2,0)/(n-1||1));
+  return {last,first,max:mx,min:mn,avg,change:((last-first)/first*100),vol:(std/avg*100),n};
+}
+
+function cc(v, decimals=1) {
+  if (v==null) return '—';
+  const arrow=v>=0?'▲':'▼', col=v>=0?'#00e5b8':'#ff6b6b';
+  return `<span style="color:${col}">${arrow} ${Math.abs(v).toFixed(decimals)}%</span>`;
+}
+
+function fmtVal(val, unidad) {
+  if (val==null) return 'N/D';
+  if (unidad.includes('millones ARS')) return (val/1e6).toLocaleString('es-AR',{maximumFractionDigits:1})+'B';
+  if (unidad.includes('USD'))   return val.toLocaleString('es-AR',{maximumFractionDigits:0});
+  if (unidad.includes('ARS/USD')) return val.toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if (unidad.includes('%'))     return val.toFixed(2)+'%';
+  return val.toLocaleString('es-AR',{maximumFractionDigits:2});
+}
+
+function movingAvg(values, w=30) {
+  return values.map((_,i) => {
+    const sl = values.slice(Math.max(0,i-w+1), i+1);
+    return sl.reduce((a,b)=>a+b,0)/sl.length;
+  });
+}
+
+function sparkline(values, color, w=100, h=38, pts=90) {
+  const v = values.slice(-pts);
+  if (v.length < 2) return '';
+  const mn=Math.min(...v), mx=Math.max(...v), range=mx-mn||1;
+  const pad = 2;
+  const coords = v.map((val,i) => {
+    const x = pad + (i/(v.length-1))*(w-pad*2);
+    const y = (h-pad) - ((val-mn)/range)*(h-pad*2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const lx = w-pad, ly = (h-pad) - ((v.at(-1)-mn)/range)*(h-pad*2);
+  const uid = color.replace('#','');
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block;overflow:visible">
+    <defs>
+      <linearGradient id="g${uid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${color}" stop-opacity="0.25"/>
+        <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <polygon points="${coords} ${(w-pad).toFixed(1)},${h} ${pad},${h}" fill="url(#g${uid})"/>
+    <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="1.5"
+      stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="2.5" fill="${color}"/>
+  </svg>`;
+}
+
+// ── PLOTLY BASE ───────────────────────────────────────────────────────────────
+const LAYOUT = {
+  paper_bgcolor:'transparent', plot_bgcolor:'transparent',
+  font:{color:'#7b90aa',family:'DM Mono, monospace',size:10},
+  xaxis:{gridcolor:'#e8eef5',linecolor:'#dde4ee',tickfont:{size:9},zeroline:false},
+  yaxis:{gridcolor:'#e8eef5',linecolor:'#dde4ee',tickfont:{size:9},zeroline:false},
+  margin:{l:68,r:16,t:8,b:36},
+  hovermode:'x unified',
+  hoverlabel:{bgcolor:'#ffffff',bordercolor:'#dde4ee',font:{color:'#0f1e30',size:11}},
+  showlegend:false
+};
+const CFG={responsive:true,displayModeBar:false};
+
+// ── BUILD DOM ─────────────────────────────────────────────────────────────────
+function buildDom() {
+  const allFechas = Object.values(ALL_DATA).flatMap(d=>d.fechas).sort();
+  if (allFechas.length) {
+    document.getElementById('ts-first').textContent = allFechas[0];
+    document.getElementById('ts-gen').textContent   = allFechas.at(-1);
+    document.getElementById('footer-ts').textContent =
+      `Datos desde ${allFechas[0]} al ${allFechas.at(-1)}`;
+  }
+  const totalPts = Object.values(ALL_DATA).reduce((s,d)=>s+d.fechas.length,0);
+  document.querySelector('.api-badge').textContent =
+    `API BCRA v4.0 · ${totalPts.toLocaleString('es-AR')} registros`;
+  document.getElementById('vars-badge').textContent =
+    `${Object.keys(ALL_DATA).length} series`;
+
+  // Cards
+  const grid = document.getElementById('cards-grid');
+  for (const id of CARD_IDS) {
+    const d = ALL_DATA[id]; if (!d) continue;
+    const ultimo = d.valores.at(-1);
+    const ultimaFecha = d.fechas.at(-1);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.id = id;
+    card.style.setProperty('--card-color', d.color);
+    card.onclick = () => focusChart(`wrap_${id}`);
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-dot" style="background:${d.color}"></div>
+        <div class="card-title">${d.nombre}</div>
+      </div>
+      <div class="card-value" style="color:${d.color}">${fmtVal(ultimo,d.unidad)}</div>
+      <div class="card-unit">${d.unidad}</div>
+      <div class="card-spark">${sparkline(d.valores, d.color)}</div>
+      <div class="card-bottom">
+        <div class="card-var" id="var_${id}">—</div>
+        <div class="card-date">${ultimaFecha||''}</div>
+      </div>`;
+    grid.appendChild(card);
+  }
+
+  // Chart containers
+  const mc = document.getElementById('main-charts');
+  for (const id of CARD_IDS) {
+    const d = ALL_DATA[id]; if (!d) continue;
+    const isWide = WIDE_IDS.has(id);
+    const wrap = document.createElement('div');
+    wrap.className = 'chart-wrap' + (isWide ? ' wide' : '');
+    wrap.id = `wrap_${id}`;
+    const isBar = id === ID_INF;
+    wrap.innerHTML = `
+      <div class="chart-header">
+        <div class="chart-title">
+          <span class="chart-dot" style="background:${d.color}"></span>
+          ${d.nombre}
+        </div>
+        <div class="chart-toolbar">
+          ${!isBar ? `<button class="toolbar-btn" id="ma_btn_${id}" onclick="toggleMA(${id})" title="Media Móvil 30d">MA 30d</button>` : ''}
+          <button class="toolbar-btn" id="tbl_btn_${id}" onclick="toggleView(${id})" title="Ver tabla">Tabla</button>
+          <button class="toolbar-btn" onclick="exportCSV(${id})" title="Descargar CSV">↓ CSV</button>
+        </div>
+      </div>
+      <div class="chart-plot" id="chart_${id}"></div>
+      <div class="data-table-wrap" id="dtable_${id}"></div>`;
+    mc.appendChild(wrap);
+  }
+}
+
+// ── RENDER CHART ──────────────────────────────────────────────────────────────
+function renderChart(id, dias) {
+  const d = ALL_DATA[id]; if (!d) return;
+  const [fx, fy] = filterByDays(id, dias);
+  if (!fx.length) return;
+  const zb = ZERO_BASED.has(id);
+  const traces = [];
+
+  if (id === ID_INF) {
+    traces.push({
+      x:fx, y:fy, type:'bar',
+      marker:{
+        color: fy.map(v => v>=5?'#ff6b6b99':v>=2?'#ff9f4399':'#00e5b860'),
+        line:{color:fy.map(v=>v>=5?'#ff6b6b':v>=2?'#ff9f43':'#00e5b8'),width:1}
+      },
+      hovertemplate:'<b>%{x}</b><br>%{y:.2f}% mensual<extra></extra>'
+    });
+  } else {
+    traces.push({
+      x:fx, y:fy, type:'scatter', mode:'lines',
+      line:{color:d.color, width:2, shape:'spline'},
+      hovertemplate:`<b>%{x}</b><br>%{y:,.2f} ${d.unidad}<extra></extra>`
+    });
+    if (MA_STATE[id] && fy.length >= 2) {
+      const ma = movingAvg(fy, 30);
+      traces.push({
+        x:fx, y:ma, type:'scatter', mode:'lines', name:'MA 30d',
+        line:{color:'#ffffff88', width:1.5, dash:'dot'},
+        hovertemplate:'MA 30d: %{y:,.2f}<extra></extra>'
+      });
+    }
+  }
+
+  Plotly.react(`chart_${id}`, traces, {
+    ...LAYOUT,
+    yaxis:{...LAYOUT.yaxis, title:d.unidad, range:yRange(fy,zb)},
+    showlegend:!!MA_STATE[id],
+    legend:{bgcolor:'#08111e88',bordercolor:'#1e293b',borderwidth:1,font:{size:9}}
+  }, CFG);
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll(dias) {
+  for (const id of CARD_IDS) {
+    const d = ALL_DATA[id]; if (!d) continue;
+    renderChart(id, dias);
+    const [,fy] = filterByDays(id, dias);
+    const s = stats(fy);
+    const el = document.getElementById(`var_${id}`);
+    if (el && s) {
+      el.textContent = `${s.change>=0?'▲':'▼'} ${Math.abs(s.change).toFixed(1)}% período`;
+      el.className = 'card-var '+(s.change>=0?'pos':'neg');
+    }
+  }
+
+  // Spread TC
+  const [t4x,t4y] = filterByDays(ID_TC4, dias);
+  const [t5x,t5y] = filterByDays(ID_TC5, dias);
+  if (t4x.length && t5x.length && document.getElementById('chart_spread')) {
+    const m4=Object.fromEntries(t4x.map((f,i)=>[f,t4y[i]]));
+    const m5=Object.fromEntries(t5x.map((f,i)=>[f,t5y[i]]));
+    const sf=t4x.filter(f=>m5[f]!=null);
+    const sv=sf.map(f=>+(m4[f]-m5[f]).toFixed(2));
+    Plotly.react('chart_spread',[
+      {x:t4x,y:t4y,name:'B 9791',type:'scatter',mode:'lines',
+       line:{color:'#ff6b6b',width:2},hovertemplate:'B9791: %{y:,.2f}<extra></extra>'},
+      {x:t5x,y:t5y,name:'A 3500',type:'scatter',mode:'lines',
+       line:{color:'#ff9f43',width:2,dash:'dash'},hovertemplate:'A3500: %{y:,.2f}<extra></extra>'},
+      {x:sf,y:sv,name:'Spread',type:'bar',yaxis:'y2',
+       marker:{color:'#a29bfe44',line:{color:'#a29bfe',width:1}},
+       hovertemplate:'Spread: %{y:.2f}<extra></extra>'}
+    ],{
+      ...LAYOUT,showlegend:true,
+      legend:{bgcolor:'#08111e88',bordercolor:'#1e293b',borderwidth:1,font:{size:10}},
+      yaxis:{...LAYOUT.yaxis,title:'ARS/USD',range:yRange([...t4y,...t5y])},
+      yaxis2:{overlaying:'y',side:'right',title:'Spread',gridcolor:'transparent',
+               tickfont:{size:9},zeroline:false,linecolor:'#1e293b'},
+      margin:{l:68,r:68,t:8,b:36}
+    },CFG);
+  }
+
+  // Tasas
+  const [bx,by] = filterByDays(ID_BADLAR, dias);
+  const [px,py] = filterByDays(ID_PF, dias);
+  if (document.getElementById('chart_tasas')) {
+    const traces=[];
+    if (bx.length) traces.push({x:bx,y:by,name:'BADLAR',type:'scatter',mode:'lines',
+      line:{color:'#a29bfe',width:2},hovertemplate:'BADLAR: %{y:.2f}%<extra></extra>'});
+    if (px.length) traces.push({x:px,y:py,name:'Plazo Fijo',type:'scatter',mode:'lines',
+      line:{color:'#74b9ff',width:2,dash:'dot'},hovertemplate:'PF: %{y:.2f}%<extra></extra>'});
+    if (traces.length) Plotly.react('chart_tasas',traces,{
+      ...LAYOUT,showlegend:true,
+      legend:{bgcolor:'#08111e88',bordercolor:'#1e293b',borderwidth:1,font:{size:10}},
+      yaxis:{...LAYOUT.yaxis,title:'% TNA',range:yRange([...by,...py])}
+    },CFG);
+  }
+
+  renderStrip(dias);
+  renderDerived();
+}
+
+// ── ANALYSIS STRIP ────────────────────────────────────────────────────────────
+function renderStrip(dias) {
+  const strip = document.getElementById('astrip');
+  const ids = [
+    {id:1,  label:'Reservas',   sc:1,   dc:0},
+    {id:4,  label:'TC B9791',   sc:1,   dc:2},
+    {id:5,  label:'TC A3500',   sc:1,   dc:2},
+    {id:12, label:'Plazo Fijo', sc:1,   dc:2},
+    {id:15, label:'Base Mon.',  sc:1e6, dc:1},
+    {id:27, label:'Inflación',  sc:1,   dc:2},
+  ];
+  let html = `<div class="strip-label">Estadísticas del período · máx · mín · promedio · volatilidad σ</div>`;
+  for (const {id,label,sc,dc} of ids) {
+    const d = ALL_DATA[id]; if (!d) continue;
+    const [,y] = filterByDays(id,dias);
+    const s = stats(y); if (!s) continue;
+    const fm = v => (v/sc).toLocaleString('es-AR',{maximumFractionDigits:dc});
+    html += `<div class="stat-item">
+      <div class="stat-key" style="color:${d.color}">${label}</div>
+      <div class="stat-val">${cc(s.change)}</div>
+      <div class="stat-sub">
+        máx ${fm(s.max)} · mín ${fm(s.min)}<br>
+        prom ${fm(s.avg)} · vol σ ${s.vol.toFixed(1)}%
+      </div>
+    </div>`;
+  }
+  const [t4x,t4y]=filterByDays(ID_TC4,dias);
+  const [t5x,t5y]=filterByDays(ID_TC5,dias);
+  const m4=Object.fromEntries(t4x.map((f,i)=>[f,t4y[i]]));
+  const m5=Object.fromEntries(t5x.map((f,i)=>[f,t5y[i]]));
+  const spreads=t4x.filter(f=>m5[f]!=null).map(f=>m4[f]-m5[f]);
+  if (spreads.length) {
+    const ss=stats(spreads);
+    html += `<div class="stat-item">
+      <div class="stat-key" style="color:#a29bfe">Spread TC</div>
+      <div class="stat-val" style="color:#a29bfe">$${spreads.at(-1).toFixed(2)}</div>
+      <div class="stat-sub">
+        máx ${ss.max.toFixed(2)} · mín ${ss.min.toFixed(2)}<br>
+        prom ${ss.avg.toFixed(2)} ARS/USD
+      </div>
+    </div>`;
+  }
+  strip.innerHTML = html;
+}
+
+// ── DERIVED METRICS ───────────────────────────────────────────────────────────
+function renderDerived() {
+  const badlar=ALL_DATA[ID_BADLAR], inf=ALL_DATA[ID_INF];
+  const tc4=ALL_DATA[ID_TC4], tc5=ALL_DATA[ID_TC5];
+  const res=ALL_DATA[1], base=ALL_DATA[15];
+  let html = '';
+
+  if (badlar && inf) {
+    const tna=badlar.valores.at(-1), infM=inf.valores.at(-1), infA=infM*12;
+    const real=tna-infA, cls=real>=0?'pos':'neg';
+    html += `<div class="derived-card" style="--d-color:#a29bfe">
+      <div class="derived-label">Tasa Real (BADLAR − Inflación × 12)</div>
+      <div class="derived-value ${cls}">${real>=0?'+':''}${real.toFixed(1)}% TNA</div>
+      <div class="derived-detail">
+        BADLAR: ${tna.toFixed(1)}% TNA · Inflación: ${infM.toFixed(2)}% mensual (${infA.toFixed(1)}% i.a.)<br>
+        <span style="color:${real>=0?'#00e5b8':'#ff6b6b'}">${real>=0?'Tasa real positiva — el ahorro supera la inflación':'Tasa real negativa — la inflación supera al ahorro'}</span>
+      </div>
+    </div>`;
+  }
+
+  if (tc4 && tc5) {
+    const m4=Object.fromEntries(tc4.fechas.map((f,i)=>[f,tc4.valores[i]]));
+    const m5=Object.fromEntries(tc5.fechas.map((f,i)=>[f,tc5.valores[i]]));
+    const sf=tc4.fechas.filter(f=>m5[f]!=null).at(-1);
+    if (sf) {
+      const v4=m4[sf], v5=m5[sf], spread=v4-v5, pct=spread/v5*100;
+      const cls=pct>1?'neg':'pos';
+      html += `<div class="derived-card" style="--d-color:#ff6b6b">
+        <div class="derived-label">Brecha Cambiaria (B9791 vs A3500)</div>
+        <div class="derived-value ${cls}">${pct>=0?'+':''}${pct.toFixed(2)}%</div>
+        <div class="derived-detail">
+          B9791: $${v4.toFixed(2)} · A3500: $${v5.toFixed(2)}<br>
+          Spread: $${spread.toFixed(2)} ARS/USD al ${sf}
+        </div>
+      </div>`;
+    }
+  }
+
+  if (base && res && tc4) {
+    const baseARS=base.valores.at(-1), resUSD=res.valores.at(-1);
+    const tcCob=baseARS/resUSD, tcActual=tc4.valores.at(-1);
+    const prima=(tcCob/tcActual-1)*100;
+    const cls=prima>20?'neg':prima>0?'neutral':'pos';
+    html += `<div class="derived-card" style="--d-color:#00e5b8">
+      <div class="derived-label">TC Cobertura Monetaria (Base / Reservas)</div>
+      <div class="derived-value ${cls}">$${tcCob.toLocaleString('es-AR',{maximumFractionDigits:0})}</div>
+      <div class="derived-detail">
+        TC oficial: $${tcActual.toLocaleString('es-AR',{maximumFractionDigits:0})} · Prima: ${prima>=0?'+':''}${prima.toFixed(1)}%<br>
+        Base: ${(baseARS/1e6).toFixed(1)}B ARS · Reservas: ${resUSD.toLocaleString('es-AR',{maximumFractionDigits:0})} MUSD
+      </div>
+    </div>`;
+  }
+
+  if (html) document.getElementById('derived-grid').innerHTML = html;
+}
+
+// ── MA TOGGLE ─────────────────────────────────────────────────────────────────
+function toggleMA(id) {
+  MA_STATE[id] = !MA_STATE[id];
+  document.getElementById(`ma_btn_${id}`)?.classList.toggle('active', MA_STATE[id]);
+  renderChart(id, currentDias);
+}
+
+// ── TABLE TOGGLE ──────────────────────────────────────────────────────────────
+function toggleView(id) {
+  const isTable = VIEW_STATE[id] !== 'table';
+  VIEW_STATE[id] = isTable ? 'table' : 'chart';
+  document.getElementById(`tbl_btn_${id}`)?.classList.toggle('active', isTable);
+  const chartDiv  = document.getElementById(`chart_${id}`);
+  const tableWrap = document.getElementById(`dtable_${id}`);
+  if (!chartDiv || !tableWrap) return;
+  chartDiv.style.display  = isTable ? 'none'  : 'block';
+  tableWrap.style.display = isTable ? 'block' : 'none';
+  if (isTable) {
+    const d = ALL_DATA[id];
+    const [fx,fy] = filterByDays(id, currentDias);
+    const rows = [...fx].reverse().map((f,ri0) => {
+      const ri = fx.length-1-ri0;
+      const chg = ri>0 ? (fy[ri]-fy[ri-1])/fy[ri-1]*100 : null;
+      const cls = chg===null?'':chg>=0?'pos':'neg';
+      const chgTxt = chg!==null
+        ? `<span class="${cls}">${chg>=0?'▲':'▼'} ${Math.abs(chg).toFixed(2)}%</span>`
+        : '—';
+      return `<tr><td>${f}</td><td>${fy[ri].toLocaleString('es-AR',{maximumFractionDigits:4})}</td><td>${chgTxt}</td></tr>`;
+    }).join('');
+    tableWrap.innerHTML = `<table class="data-table">
+      <thead><tr><th>Fecha</th><th>${d.unidad}</th><th>Variación</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+}
+
+// ── EXPORT CSV ────────────────────────────────────────────────────────────────
+function exportCSV(id) {
+  const d = ALL_DATA[id]; if (!d) return;
+  const rows = ['fecha,valor', ...d.fechas.map((f,i)=>`${f},${d.valores[i]}`)];
+  const blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `bcra_${d.nombre.toLowerCase().replace(/[\s()\/]+/g,'_')}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+// ── PERIOD ────────────────────────────────────────────────────────────────────
+function setPeriod(dias, btn) {
+  currentDias = dias;
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll(dias);
+}
+
+// ── FOCUS ─────────────────────────────────────────────────────────────────────
+function focusChart(wrapId) {
+  const wrap=document.getElementById(wrapId); if (!wrap) return;
+  const was=wrap.classList.contains('focused');
+  document.querySelectorAll('.chart-wrap').forEach(w=>w.classList.remove('focused'));
+  document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
+  if (!was) {
+    wrap.classList.add('focused');
+    const idNum=wrapId.replace('wrap_','');
+    document.querySelector(`.card[data-id="${idNum}"]`)?.classList.add('active');
+    wrap.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+// ── CLOCK ─────────────────────────────────────────────────────────────────────
+function tick() {
+  const n=new Date(), p=x=>String(x).padStart(2,'0');
+  document.getElementById('ts-now').textContent =
+    `${p(n.getDate())}/${p(n.getMonth()+1)}/${n.getFullYear()} ${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+}
+tick(); setInterval(tick,1000);
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+if (Object.keys(ALL_DATA).length === 0) {
+  document.getElementById('main-charts').innerHTML =
+    `<div style="grid-column:1/-1;padding:3rem 2rem;font-family:'DM Mono',monospace;
+      color:#475569;font-size:.8rem;text-align:center;line-height:2.5">
+      Sin datos. Ejecutá:<br>
+      <code style="color:#00e5b8;font-size:.9rem">python generate_dashboard_v2.py --actualizar</code><br>
+      para descargar datos desde la API del BCRA.</div>`;
+} else {
+  buildDom();
+  renderAll(365);
+}
 </script>
 </body>
 </html>
