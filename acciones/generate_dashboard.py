@@ -529,10 +529,8 @@ document.addEventListener('DOMContentLoaded', function() {{
 </body>
 </html>"""
 
-with open('index.html', 'w', encoding='utf-8') as f:
-    f.write(html_content)
-
-print(f"Dashboard actualizado: {now_str}")
+# index.html ya no se regenera — se usa acciones/index.html estático
+print(f"data.json actualizado: {now_str}")
 
 
 import json
